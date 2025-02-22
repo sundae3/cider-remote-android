@@ -32,6 +32,7 @@ import com.example.ciderremotetest1.viewmodel.MainViewModel
 @Composable
 fun Screen2(mainViewModel: MainViewModel) {
     var nowPlaying = mainViewModel.nowPlayingData.value.info
+    var isConnected = mainViewModel.nowPlayingData.value.status
     val timeProgress2 by remember { mainViewModel.trackProgress }
     var timeProgress3 = "${timeProgress2.toInt()/60}:${timeProgress2.toInt()%60}"
 
@@ -52,6 +53,7 @@ fun Screen2(mainViewModel: MainViewModel) {
     }
     var shuffleMode = mainViewModel.shuffleState.value
     var repeatMode = mainViewModel.repeatState.value
+    var userUrl = mainViewModel.baseUserUrl.value
     var fixedArtworkUrl = nowPlaying.artwork.url.replace("{w}x{h}", "512x512")
     val playPauseUrl = "/api/v1/playback/playpause"
     val nextUrl = "/api/v1/playback/next"
@@ -104,6 +106,7 @@ fun Screen2(mainViewModel: MainViewModel) {
 
     val relativeSizeInDpWidth5dp = (1f/ 100f) * screenWidth.value.dp
 
+    if(userUrl != "" && isConnected !="") {
 
     Column(modifier = Modifier.padding(horizontal = 10.dp)) {
         mainViewModel.ImageLoader(fixedArtworkUrl)
@@ -243,7 +246,7 @@ fun Screen2(mainViewModel: MainViewModel) {
                     Icon(
                         painter = painterResource(id = middle_button_icon), // Your vector drawable XML resource
                         contentDescription = "Example Icon",
-                        modifier = Modifier.size(iconSize * 1f), // Icon size
+                        modifier = Modifier.size(iconSize * 0.9f), // Icon size
                         tint = mainbuttons_tint
                     )
                 }
@@ -353,8 +356,21 @@ fun Screen2(mainViewModel: MainViewModel) {
             }
         }
 
+    }
 
-
+    } else if(isConnected == "" && userUrl != "") {
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()) {
+            Text("Not Connected to Cider", color = Color.White, fontSize = 30.sp)
+        }
+    }
+    else {
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()) {
+            Text("Add device First", color = Color.White, fontSize = 30.sp)
+        }
     }
 }
 

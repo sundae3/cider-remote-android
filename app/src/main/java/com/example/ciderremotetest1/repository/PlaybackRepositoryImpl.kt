@@ -137,11 +137,12 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
 
 
     // Remove the custom CoroutineScope for better management of suspend functions
-    override suspend fun fetchNowPlayingData(url: String): NowPlayingJsonMaker? {
+    override suspend fun fetchNowPlayingData(url: String, token: String): NowPlayingJsonMaker? {
         println(url)
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/now-playing")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -177,11 +178,12 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun fetchCurrentQueue(url: String): List<QueueJsonMaker>? {
+    override suspend fun fetchCurrentQueue(url: String, token: String): List<QueueJsonMaker>? {
         println(url)
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/queue")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -220,10 +222,11 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun isCurrentlyPlaying(url: String): isCurrentlyplayingJsonMaker? {
+    override suspend fun isCurrentlyPlaying(url: String, token: String): isCurrentlyplayingJsonMaker? {
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/is-playing")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -257,10 +260,11 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun volumeStateFetcher(url: String): volumeStateJsonMaker? {
+    override suspend fun volumeStateFetcher(url: String, token: String): volumeStateJsonMaker? {
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/volume")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -294,7 +298,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun makePostRequest(url: String): String {
+    override suspend fun makePostRequest(url: String, token: String): String {
         return withContext(Dispatchers.IO) {  // Dispatching to IO thread
             // JSON body for the POST request
             val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -308,6 +312,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
 
             val request = Request.Builder()
                 .url(url) // Use the provided URL for the POST request
+                .header("apptoken", token)  // Add the Authorization header
                 .post(body)  // Set the POST method with the body
                 .build()
 
@@ -331,7 +336,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun makePostRequestWithBody(url: String, body:String): String {
+    override suspend fun makePostRequestWithBody(url: String, token: String, body:String): String {
         return withContext(Dispatchers.IO) {  // Dispatching to IO thread
             // JSON body for the POST request
             val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -341,6 +346,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
 
             val request = Request.Builder()
                 .url(url) // Use the provided URL for the POST request
+                .header("apptoken", token)  // Add the Authorization header
                 .post(body)  // Set the POST method with the body
                 .build()
 

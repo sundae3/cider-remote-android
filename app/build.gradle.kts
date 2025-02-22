@@ -12,9 +12,10 @@ android {
     defaultConfig {
         applicationId = "com.example.ciderremotetest1"
         minSdk = 25
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.1.0"
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 35
+        versionCode = 3
+        versionName = "1.2.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -120,6 +121,12 @@ dependencies {
     implementation("sh.calvin.reorderable:reorderable:2.4.3")
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+
+    //scanner dependcies
+    implementation("androidx.camera:camera-camera2:1.3.0")
+    implementation("androidx.camera:camera-lifecycle:1.3.0")
+    implementation("androidx.camera:camera-view:1.3.0")
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
     // Lifecycle ViewModel
 }

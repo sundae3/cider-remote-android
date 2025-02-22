@@ -1,5 +1,6 @@
 package com.example.ciderremotetest1.uicomponents
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import androidx.compose.foundation.Canvas
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 
@@ -64,16 +66,18 @@ fun MyApp(mainViewModel: MainViewModel) {
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
+    // Define max content width
+    val maxContentWidth = 600.dp
+
     // Calculate responsive dimensions
     val bottomNavHeight = remember(screenHeight) {
-        minOf(screenHeight * 0.1f, 80.dp) // 10% of screen height, max 80.dp
+        minOf(screenHeight * 0.15f, 80.dp)
     }
 
     val contentPadding = remember(screenHeight) {
-        minOf(screenHeight * 0.025f, 20.dp) // 2.5% of screen height, max 20.dp
+        minOf(screenHeight * 0.025f, 20.dp)
     }
 
-// Remember circle information with key based on colors2
     val circles = remember(colors2) {
         List(numberOfCircles) {
             CircleInfo(
@@ -95,14 +99,11 @@ fun MyApp(mainViewModel: MainViewModel) {
         }
     }
 
-// Update circles periodically and when colors change
     LaunchedEffect(Unit, colors2) {
         while (true) {
-
             println(mainViewModel.topColors.value)
             circles.forEach { circle ->
                 launch {
-                    // Animate to new random position
                     circle.animatedPosition.animateTo(
                         targetValue = Offset(
                             Random.nextFloat() * 1000f,
@@ -119,22 +120,26 @@ fun MyApp(mainViewModel: MainViewModel) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Background layer
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        // Background layer spans full width
         Box(modifier = Modifier.fillMaxSize()) {
-            Canvas(modifier = Modifier.fillMaxSize()
-                .graphicsLayer {
-                    renderEffect = BlurEffect(
-                        radiusX = 200f,
-                        radiusY = 200f,
-//                    edgeTreatment = TileMode.Decal
+            Canvas(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        renderEffect = BlurEffect(
+                            radiusX = 200f,
+                            radiusY = 200f,
+                        )
+                    }
+                    .background(
+                        brush = ShaderBrush(
+                            ImageShader(imageBitmap)
+                        )
                     )
-                }
-                .background(
-                    brush = ShaderBrush(
-                        ImageShader(imageBitmap)
-                    )
-                )
             ) {
                 circles.forEach { circle ->
                     drawCircle(
@@ -146,28 +151,37 @@ fun MyApp(mainViewModel: MainViewModel) {
             }
         }
 
-        // Overlay layer
+        // Overlay layer spans full width
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.3f))
         )
 
-        // Content layer with Scaffold
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = Color.Transparent, // Make scaffold background transparent
-            bottomBar = {
-                BottomNavigationBar(navController = navController,bottomNavHeight = bottomNavHeight)
-            }
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(top=screenHeight/30)
-            ) {
-//                BackgroundConfigurationProvider(mainViewModel = mainViewModel) {
+        // Content layer with width constraint
+        Surface(
+            modifier = Modifier
+                .fillMaxHeight()
+                .widthIn(max = maxContentWidth),
+//                .padding(horizontal = contentPadding),
+            color = Color.Transparent
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                containerColor = Color.Transparent,
+                bottomBar = {
+                    BottomNavigationBar(
+                        navController = navController,
+                        bottomNavHeight = bottomNavHeight
+                    )
+                }
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(top = screenHeight/30)
+                ) {
                     NavHost(
                         navController = navController,
                         startDestination = "screen2"
@@ -176,8 +190,7 @@ fun MyApp(mainViewModel: MainViewModel) {
                         composable("screen2") { Screen2(mainViewModel) }
                         composable("screen3") { Screen3(mainViewModel) }
                     }
-//                }
-
+                }
             }
         }
     }

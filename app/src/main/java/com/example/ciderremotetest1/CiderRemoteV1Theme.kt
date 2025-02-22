@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 fun CiderRemoteTest1Theme(content: @Composable () -> Unit) {
     val lightColors = lightColorScheme(
         primary = Color(0xFFfa2d48),   // Purple
-        secondary = Color(0xFF03DAC5), // Teal
+        secondary = Color(0xFFF48FB1), // Teal
         background = Color(0xFFFFFFFF), // Light background
         surface = Color(0xFFF5F5F5),    // Light surface color
         onPrimary = Color.White,        // Text on primary
@@ -26,8 +26,9 @@ fun CiderRemoteTest1Theme(content: @Composable () -> Unit) {
 
     // Define the colors for the dark theme
     val darkColors = darkColorScheme(
-        primary = Color(0xFFfa2d48),   // Purple (same as light theme)
-        secondary = Color(0xFF03DAC5), // Teal (same as light theme)
+//        primary = Color(0xFFfa2d48),   // Purple (same as light theme)
+        primary = Color(0xFFE91E63),   // Purple (same as light theme)
+        secondary = Color(0xFFF48FB1), // Teal (same as light theme)
         background = Color(0xFFFFFFFF), // Dark background
         surface = Color(0xFF1E1E1E),    // Dark surface color
         onPrimary = Color.White,        // Text on primary
