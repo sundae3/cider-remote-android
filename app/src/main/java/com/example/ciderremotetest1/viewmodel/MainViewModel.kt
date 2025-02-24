@@ -239,16 +239,129 @@ class MainViewModel(private val socketRepository: SocketRepository,private val p
 
     }
 
+//
+//    init {
+//        // Load the URL when the ViewModel is created
+//        loadUrl()
+//        viewModelScope.launch {
+//            preferencesRepository.objectListFlow.collect { list ->
+//                _objectListState.value = list
+//            }
+//        }
+//        observeSocketState()
+//    }
 
     init {
-        // Load the URL when the ViewModel is created
-        loadUrl()
+        initializeData()
+    }
+
+    private fun initializeData() {
         viewModelScope.launch {
             preferencesRepository.objectListFlow.collect { list ->
                 _objectListState.value = list
             }
         }
         observeSocketState()
+    }
+
+    // Data Loading Functions its being called inside the MainActivity itself
+    suspend fun loadInitialData() {
+        loadUrl2()
+    }
+
+    fun loadUrl2() {
+        // Cancel any existing job before starting a new one
+
+        viewModelScope.launch {
+            preferencesRepository.selectedObjectedFlow.collect { item ->
+                println(item)
+                _selectedObjectState.value = item
+                _baseUserUrl.value = item.url
+                _userToken.value = item.token
+
+                if (_baseUserUrl.value.isNotEmpty() && _userToken.value.isNotEmpty()) {
+                    refreshAllData()
+                }
+            }
+        }
+    }
+
+
+    suspend fun refreshDataOnResume() {
+        if (_baseUserUrl.value.isNotEmpty() && _userToken.value.isNotEmpty()) {
+            try {
+                refreshAllData()
+            } catch (e: Exception) {
+                println("Error refreshing data: ${e.message}")
+            }
+        }
+    }
+
+    private suspend fun refreshAllData() {
+        try {
+            socketRepository.setupSocketListeners(_baseUserUrl.value)
+            refreshQueue()
+            refreshNowPlaying()
+            refreshPlayingStatus()
+            refreshVolumeState()
+            var ela_num = _nowPlayingData.value.info.currentPlaybackTime
+            var totalnum = ela_num + _nowPlayingData.value.info.remainingTime
+            var prog = (ela_num / totalnum)
+            trackProgressMediator(prog)
+        } catch (e: Exception) {
+            println("Error in refreshAllData: ${e.message}")
+        }
+    }
+
+    private suspend fun refreshQueue() {
+        try {
+            val queue = playbackRepository.fetchCurrentQueue(baseUserUrl.value, _userToken.value)
+            if (queue?.isNotEmpty() == true) {
+                val modifiedQueue = queue.toMutableList().apply {
+                    removeAt(0)
+                }
+                _queueOg.clear()
+                _queueOg.addAll(modifiedQueue)
+                _queue.value = modifiedQueue
+            }
+        } catch (e: Exception) {
+            println("Error refreshing queue: ${e.message}")
+        }
+    }
+
+    private suspend fun refreshNowPlaying() {
+        try {
+            val data = playbackRepository.fetchNowPlayingData(_baseUserUrl.value, _userToken.value)
+            data?.let {
+                _nowPlayingData.value = it
+                socketRepository.updateShuffleState(it.info.shuffleMode)
+                socketRepository.updateRepeatState(it.info.repeatMode)
+            }
+        } catch (e: Exception) {
+            println("Error refreshing now playing: ${e.message}")
+        }
+    }
+
+    private suspend fun refreshPlayingStatus() {
+        try {
+            val status = playbackRepository.isCurrentlyPlaying(_baseUserUrl.value, _userToken.value)
+            status?.let {
+                socketRepository.updatePlayPause(it.is_playing)
+            }
+        } catch (e: Exception) {
+            println("Error refreshing playing status: ${e.message}")
+        }
+    }
+
+    private suspend fun refreshVolumeState() {
+        try {
+            val state = playbackRepository.volumeStateFetcher(_baseUserUrl.value, _userToken.value)
+            state?.let {
+                socketRepository.volumeStateChanger(it.volume)
+            }
+        } catch (e: Exception) {
+            println("Error refreshing volume state: ${e.message}")
+        }
     }
 
 
@@ -339,77 +452,78 @@ class MainViewModel(private val socketRepository: SocketRepository,private val p
     }
 
 
-    fun loadUrl() {
-        viewModelScope.launch {
-            preferencesRepository.selectedObjectedFlow.collect{ item ->
-                println(item)
-                _selectedObjectState.value = item
-//                _userUrl.value = url
-                _baseUserUrl.value = item.url
-                _userToken.value = item.token
-//                println(_queue[0])
-                if(_baseUserUrl.value != "" && _userToken.value != "") {
-
-                    try {
-                        socketRepository.setupSocketListeners(_baseUserUrl.value)
-                        val queue =  playbackRepository.fetchCurrentQueue(baseUserUrl.value, _userToken.value)
-//                    _queue.clear()
-                        if(queue?.isEmpty() == false) {
-                            queue?.let {
-
-                                val modifiedQueue = it.toMutableList().apply {
-                                    removeAt(0) // Remove the first element
-                                }
-                                _queueOg.clear()
-                                _queueOg.addAll(modifiedQueue)
-                                _queue.value = modifiedQueue // Set the value to the new list
-                            }
-                        }
-
-                    } catch (e:Exception) {
-                        println(e.message)
-                    }
-
-
-                    println(_queue)
-                    try {
-                        val data =
-                            playbackRepository.fetchNowPlayingData(_baseUserUrl.value, _userToken.value)
-                        if (data != null) {
-                            _nowPlayingData.value = data
-                            socketRepository.updateShuffleState(data.info.shuffleMode)
-                            socketRepository.updateRepeatState(data.info.repeatMode)
-                        } // Update the LiveData with the result
-                    } catch (e: Exception) {
-                        // Handle error (e.g., show error message)
-                        println(e.message)
-                    }
-                    try {
-                        val status =
-                            playbackRepository.isCurrentlyPlaying(_baseUserUrl.value, _userToken.value)
-                        if (status != null) {
-                            socketRepository.updatePlayPause(status.is_playing)
-                        } // Update the LiveData with the result
-                    } catch (e: Exception) {
-                        // Handle error (e.g., show error message)
-                        println(e.message)
-                    }
-                    try {
-                        val state = playbackRepository.volumeStateFetcher(_baseUserUrl.value, _userToken.value)
-                        if(state != null) {
-                            println(state.volume)
-                            socketRepository.volumeStateChanger(state.volume)
-                        }
-
-                    }  catch (e: Exception) {
-                        // Handle error (e.g., show error message)
-                        println(e.message)
-                    }
-                }
-//                println(_baseUserUrl)
-            }
-        }
-    }
+//
+//    fun loadUrl() {
+//        viewModelScope.launch {
+//            preferencesRepository.selectedObjectedFlow.collect{ item ->
+//                println(item)
+//                _selectedObjectState.value = item
+////                _userUrl.value = url
+//                _baseUserUrl.value = item.url
+//                _userToken.value = item.token
+////                println(_queue[0])
+//                if(_baseUserUrl.value != "" && _userToken.value != "") {
+//
+//                    try {
+//                        socketRepository.setupSocketListeners(_baseUserUrl.value)
+//                        val queue =  playbackRepository.fetchCurrentQueue(baseUserUrl.value, _userToken.value)
+////                    _queue.clear()
+//                        if(queue?.isEmpty() == false) {
+//                            queue?.let {
+//
+//                                val modifiedQueue = it.toMutableList().apply {
+//                                    removeAt(0) // Remove the first element
+//                                }
+//                                _queueOg.clear()
+//                                _queueOg.addAll(modifiedQueue)
+//                                _queue.value = modifiedQueue // Set the value to the new list
+//                            }
+//                        }
+//
+//                    } catch (e:Exception) {
+//                        println(e.message)
+//                    }
+//
+//
+//                    println(_queue)
+//                    try {
+//                        val data =
+//                            playbackRepository.fetchNowPlayingData(_baseUserUrl.value, _userToken.value)
+//                        if (data != null) {
+//                            _nowPlayingData.value = data
+//                            socketRepository.updateShuffleState(data.info.shuffleMode)
+//                            socketRepository.updateRepeatState(data.info.repeatMode)
+//                        } // Update the LiveData with the result
+//                    } catch (e: Exception) {
+//                        // Handle error (e.g., show error message)
+//                        println(e.message)
+//                    }
+//                    try {
+//                        val status =
+//                            playbackRepository.isCurrentlyPlaying(_baseUserUrl.value, _userToken.value)
+//                        if (status != null) {
+//                            socketRepository.updatePlayPause(status.is_playing)
+//                        } // Update the LiveData with the result
+//                    } catch (e: Exception) {
+//                        // Handle error (e.g., show error message)
+//                        println(e.message)
+//                    }
+//                    try {
+//                        val state = playbackRepository.volumeStateFetcher(_baseUserUrl.value, _userToken.value)
+//                        if(state != null) {
+//                            println(state.volume)
+//                            socketRepository.volumeStateChanger(state.volume)
+//                        }
+//
+//                    }  catch (e: Exception) {
+//                        // Handle error (e.g., show error message)
+//                        println(e.message)
+//                    }
+//                }
+////                println(_baseUserUrl)
+//            }
+//        }
+//    }
 
 
     fun userIntearctionMeditor(status: Boolean) {
@@ -529,6 +643,14 @@ class MainViewModel(private val socketRepository: SocketRepository,private val p
             placeholder = painterResource(id = R.drawable.placeholder_transparent)
 
         )
+    }
+
+    fun updateStateOnResume() {
+        viewModelScope.launch {
+            // Refresh data
+            // Update state
+            // Trigger UI updates
+        }
     }
 
     override fun onCleared() {

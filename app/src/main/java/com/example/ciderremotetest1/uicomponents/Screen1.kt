@@ -120,6 +120,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
 
@@ -148,6 +152,7 @@ fun CustomTextField(
     )
 }
 
+
 @Composable
 fun FormOverlay(
     isVisible: Boolean,
@@ -168,7 +173,7 @@ fun FormOverlay(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = mainViewModel.topColors.value[0])
+//                    .background(color =Color.Transparent)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null // No ripple effect
@@ -187,7 +192,7 @@ fun FormOverlay(
                     modifier = Modifier
                         .wrapContentSize()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(color = Color.Black.copy(alpha = 0.6f))
+                        .background(color = Color.Black.copy(alpha = 0.4f))
                         .padding(relativeSizeInDpWidth*5f)
                         ,
                     verticalArrangement = Arrangement.Center
@@ -218,6 +223,17 @@ fun FormOverlay(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.LightGray,
+                            cursorColor = Color.White
+                            // change to the color you want when focused
+                             // change to the color you want when not focused
+                        )
                     )
 
                     OutlinedTextField(
@@ -227,6 +243,15 @@ fun FormOverlay(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.LightGray,
+                            cursorColor = Color.White
+                        )
                     )
 
 
@@ -237,6 +262,15 @@ fun FormOverlay(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.LightGray,
+                            cursorColor = Color.White
+                        )
                     )
 
                     OutlinedTextField(
@@ -246,6 +280,15 @@ fun FormOverlay(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 20.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.LightGray,
+                            cursorColor = Color.White
+                        )
                     )
 
 
@@ -318,7 +361,7 @@ fun DeviceNameFormOverlay(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = mainViewModel.topColors.value[0])
+//                .background(color =Color.Transparent)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null // No ripple effect
@@ -336,7 +379,7 @@ fun DeviceNameFormOverlay(
                     modifier = Modifier
                         .wrapContentSize()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(color = Color.Black.copy(alpha = 0.6f))
+                        .background(color = Color.Black.copy(alpha = 0.4f))
                         .padding(relativeSizeInDpWidth*10f)
                     ,
                     verticalArrangement = Arrangement.Center
@@ -366,7 +409,16 @@ fun DeviceNameFormOverlay(
                         label = {Text("Name the device")},
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 24.dp)
+                            .padding(bottom = 24.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.White,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.LightGray,
+                            cursorColor = Color.White
+                        )
                     )
 
 
@@ -428,6 +480,15 @@ fun Screen1(mainViewModel: MainViewModel) {
 
     var scannedString by remember { mutableStateOf("") }
 
+    BackHandler(enabled = isScanning || isFormVisible || isDeviceNameFormVisible || showPermissionDialog) {
+        when {
+            showPermissionDialog -> showPermissionDialog = false
+            isScanning -> isScanning = false
+            isFormVisible -> isFormVisible = false
+            isDeviceNameFormVisible -> isDeviceNameFormVisible = false
+        }
+    }
+
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -468,43 +529,54 @@ fun Screen1(mainViewModel: MainViewModel) {
             showPermissionDialog = true
         }
     }
+    val isAnyOverlayVisible = isScanning || isFormVisible || isDeviceNameFormVisible
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Main Content
-        Scaffold(
-            containerColor = Color.Transparent,
-            floatingActionButton = {
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                ) {
-                    // Form FAB
-                    FloatingActionButton(
-                        onClick = { isFormVisible = true },
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.padding(end = 8.dp)
+        AnimatedVisibility(
+            visible = !isAnyOverlayVisible,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            // Main Content
+            Scaffold(
+                containerColor = Color.Transparent,
+                floatingActionButton = {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
                     ) {
-                        Icon(Icons.Default.Edit, contentDescription = "Show Form", tint = Color.White)
-                    }
+                        // Form FAB
+                        FloatingActionButton(
+                            onClick = { isFormVisible = true },
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Show Form",
+                                tint = Color.White
+                            )
+                        }
 
-                    // Scanner FAB
-                    FloatingActionButton(
-                        onClick = {
-                            when {
-                                ContextCompat.checkSelfPermission(
-                                    context,
-                                    Manifest.permission.CAMERA
-                                ) == PackageManager.PERMISSION_GRANTED -> {
-                                    isScanning = true
-                                    permissionDenied = false
+                        // Scanner FAB
+                        FloatingActionButton(
+                            onClick = {
+                                when {
+                                    ContextCompat.checkSelfPermission(
+                                        context,
+                                        Manifest.permission.CAMERA
+                                    ) == PackageManager.PERMISSION_GRANTED -> {
+                                        isScanning = true
+                                        permissionDenied = false
+                                    }
+
+                                    else -> {
+                                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                                    }
                                 }
-                                else -> {
-                                    permissionLauncher.launch(Manifest.permission.CAMERA)
-                                }
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ) {
+                            },
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ) {
 //                        Row(
 //                            verticalAlignment = Alignment.CenterVertically,
 //                            horizontalArrangement = Arrangement.Center,
@@ -517,180 +589,226 @@ fun Screen1(mainViewModel: MainViewModel) {
                             )
 //                        }
 
-                    }
-                }
-            }
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    // 1. Fixed card section
-                    Text("Selected Device", fontSize = 25.sp, color = Color.White, modifier = Modifier.padding(start= (relativeSizeInDpWidth*2.5f)+iconSize* 0.1f,bottom = relativeSizeInDpWidth*3f))
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(relativeSizeInDpWidth/2),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 0.dp
-                        ),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.Transparent
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = relativeSizeInDpWidth , vertical = relativeSizeInDpWidth*2.5f)
-                        ) {
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row {
-                                    if(selectedObjectState.url != "") {
-                                        Button(
-                                            onClick = { },
-                                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                                            contentPadding = PaddingValues(iconSize * 0.1f),
-                                            modifier = Modifier
-                                                .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.radio_button_fill), // Your vector drawable XML resource
-                                                contentDescription = "Radio Icon",
-                                            )
-                                        }
-
-                                        Column(modifier = Modifier.padding(start = relativeSizeInDpWidth*3f)) {
-                                            Text(
-                                                mainViewModel.shortenString(
-                                                    selectedObjectState.deviceName,
-                                                    characterLimitDeviceName
-                                                ), color = Color.White, fontSize = 20.sp
-                                            )
-                                            Text(
-                                                mainViewModel.shortenString(
-                                                    selectedObjectState.url,
-                                                    characterLimitDeviceData
-                                                ), color = Color.LightGray, fontSize = 15.sp
-                                            )
-                                            Text(
-                                                selectedObjectState.method,
-                                                color = Color.LightGray,
-                                                fontSize = 15.sp
-                                            )
-                                        }
-                                    }
-                                }
-
-                            }
                         }
                     }
-                    Text("All Devices", fontSize = 25.sp, color = Color.White,
-                        modifier = Modifier
-                            .padding(start= (relativeSizeInDpWidth*2.5f)+iconSize* 0.1f,
-                                     bottom = relativeSizeInDpWidth*3f,
-                                     top = relativeSizeInDpWidth*3f
-                            )
-                    )
-
-                    Spacer(modifier = Modifier.height(relativeSizeInDpWidth))
-
-                    // 2. Lazy Column with Cards - will scroll independently
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f), // This makes the LazyColumn take remaining space,
-                         state = lazyListState
+                }
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        items(objectListState, key = { it.id }) { item ->
-                            Card(
+                        // 1. Fixed card section
+                        Text(
+                            "Selected Device",
+                            fontSize = 25.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(
+                                start = (relativeSizeInDpWidth * 2.5f) + iconSize * 0.1f,
+                                bottom = relativeSizeInDpWidth * 3f
+                            )
+                        )
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(relativeSizeInDpWidth / 2),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 0.dp
+                            ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            )
+                        ) {
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(relativeSizeInDpWidth/2),
-                                elevation = CardDefaults.cardElevation(
-                                    defaultElevation = 0.dp
-                                ),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color.Transparent
-                                )
+                                    .padding(
+                                        horizontal = relativeSizeInDpWidth,
+                                        vertical = relativeSizeInDpWidth * 2.5f
+                                    )
                             ) {
-                                var showDeleteDialog by remember { mutableStateOf(false) }
 
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = relativeSizeInDpWidth , vertical = relativeSizeInDpWidth*2.5f)
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Row {
+                                    Row {
+                                        if (selectedObjectState.url != "") {
                                             Button(
-                                                onClick = { mainViewModel.saveSelectedObject(item.id) },
+                                                onClick = { },
                                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                                                contentPadding = PaddingValues(iconSize* 0.1f),
+                                                contentPadding = PaddingValues(iconSize * 0.1f),
                                                 modifier = Modifier
-                                                    .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+                                                    .defaultMinSize(
+                                                        minWidth = 1.dp,
+                                                        minHeight = 1.dp
+                                                    )
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.radio_button), // Your vector drawable XML resource
+                                                    painter = painterResource(R.drawable.radio_button_fill), // Your vector drawable XML resource
                                                     contentDescription = "Radio Icon",
                                                 )
                                             }
-                                            Column(modifier = Modifier.padding(start = relativeSizeInDpWidth*3f)) {
-                                                Text(mainViewModel.shortenString(item.deviceName, characterLimitDeviceName), color = Color.White, fontSize = 20.sp)
-                                                Text(mainViewModel.shortenString(item.url, characterLimitDeviceData), color = Color.LightGray, fontSize = 15.sp)
-                                                Text(item.method, color = Color.LightGray, fontSize = 15.sp)
-                                            }
-                                        }
 
-                                        Button(
-                                            onClick = { showDeleteDialog = true },
-                                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                                            contentPadding = PaddingValues(iconSize* 0.1f),
-                                            modifier = Modifier
-                                                .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.x_circle), // Your vector drawable XML resource
-                                                contentDescription = "Delete Icon",
+                                            Column(modifier = Modifier.padding(start = relativeSizeInDpWidth * 3f)) {
+                                                Text(
+                                                    mainViewModel.shortenString(
+                                                        selectedObjectState.deviceName,
+                                                        characterLimitDeviceName
+                                                    ), color = Color.White, fontSize = 20.sp
                                                 )
+                                                Text(
+                                                    mainViewModel.shortenString(
+                                                        selectedObjectState.url,
+                                                        characterLimitDeviceData
+                                                    ), color = Color.LightGray, fontSize = 15.sp
+                                                )
+                                                Text(
+                                                    selectedObjectState.method,
+                                                    color = Color.LightGray,
+                                                    fontSize = 15.sp
+                                                )
+                                            }
                                         }
                                     }
-                                }
 
-                                if (showDeleteDialog) {
-                                    AlertDialog(
-                                        onDismissRequest = { showDeleteDialog = false },
-                                        title = { Text("Confirm Delete") },
-                                        text = { Text("Are you sure you want to delete this item?") },
-                                        confirmButton = {
-                                            TextButton(
-                                                onClick = {
-                                                    // Add your delete logic here
-                                                    // mainViewModel.deleteObject(item.id)
-                                                    mainViewModel.removeObjectFromList(item.id)
-                                                    showDeleteDialog = false
+                                }
+                            }
+                        }
+                        Text(
+                            "All Devices", fontSize = 25.sp, color = Color.White,
+                            modifier = Modifier
+                                .padding(
+                                    start = (relativeSizeInDpWidth * 2.5f) + iconSize * 0.1f,
+                                    bottom = relativeSizeInDpWidth * 3f,
+                                    top = relativeSizeInDpWidth * 3f
+                                )
+                        )
+
+                        Spacer(modifier = Modifier.height(relativeSizeInDpWidth))
+
+                        // 2. Lazy Column with Cards - will scroll independently
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f), // This makes the LazyColumn take remaining space,
+                            state = lazyListState
+                        ) {
+                            items(objectListState, key = { it.id }) { item ->
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(relativeSizeInDpWidth / 2),
+                                    elevation = CardDefaults.cardElevation(
+                                        defaultElevation = 0.dp
+                                    ),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color.Transparent
+                                    )
+                                ) {
+                                    var showDeleteDialog by remember { mutableStateOf(false) }
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                horizontal = relativeSizeInDpWidth,
+                                                vertical = relativeSizeInDpWidth * 2.5f
+                                            )
+                                    ) {
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Row {
+                                                Button(
+                                                    onClick = {
+                                                        mainViewModel.saveSelectedObject(
+                                                            item.id
+                                                        )
+                                                    },
+                                                    colors = ButtonDefaults.buttonColors(
+                                                        containerColor = Color.Transparent
+                                                    ),
+                                                    contentPadding = PaddingValues(iconSize * 0.1f),
+                                                    modifier = Modifier
+                                                        .defaultMinSize(
+                                                            minWidth = 1.dp,
+                                                            minHeight = 1.dp
+                                                        )
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.radio_button), // Your vector drawable XML resource
+                                                        contentDescription = "Radio Icon",
+                                                    )
                                                 }
-                                            ) {
-                                                Text("Delete")
+                                                Column(modifier = Modifier.padding(start = relativeSizeInDpWidth * 3f)) {
+                                                    Text(
+                                                        mainViewModel.shortenString(
+                                                            item.deviceName,
+                                                            characterLimitDeviceName
+                                                        ), color = Color.White, fontSize = 20.sp
+                                                    )
+                                                    Text(
+                                                        mainViewModel.shortenString(
+                                                            item.url,
+                                                            characterLimitDeviceData
+                                                        ), color = Color.LightGray, fontSize = 15.sp
+                                                    )
+                                                    Text(
+                                                        item.method,
+                                                        color = Color.LightGray,
+                                                        fontSize = 15.sp
+                                                    )
+                                                }
                                             }
-                                        },
-                                        dismissButton = {
-                                            TextButton(onClick = { showDeleteDialog = false }) {
-                                                Text("Cancel")
+
+                                            Button(
+                                                onClick = { showDeleteDialog = true },
+                                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                                                contentPadding = PaddingValues(iconSize * 0.1f),
+                                                modifier = Modifier
+                                                    .defaultMinSize(
+                                                        minWidth = 1.dp,
+                                                        minHeight = 1.dp
+                                                    )
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.x_circle), // Your vector drawable XML resource
+                                                    contentDescription = "Delete Icon",
+                                                )
                                             }
                                         }
-                                    )
+                                    }
+
+                                    if (showDeleteDialog) {
+                                        AlertDialog(
+                                            onDismissRequest = { showDeleteDialog = false },
+                                            title = { Text("Confirm Delete") },
+                                            text = { Text("Are you sure you want to delete this item?") },
+                                            confirmButton = {
+                                                TextButton(
+                                                    onClick = {
+                                                        // Add your delete logic here
+                                                        // mainViewModel.deleteObject(item.id)
+                                                        mainViewModel.removeObjectFromList(item.id)
+                                                        showDeleteDialog = false
+                                                    }
+                                                ) {
+                                                    Text("Delete")
+                                                }
+                                            },
+                                            dismissButton = {
+                                                TextButton(onClick = { showDeleteDialog = false }) {
+                                                    Text("Cancel")
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -700,147 +818,166 @@ fun Screen1(mainViewModel: MainViewModel) {
         }
 
         // Form Overlay
-        FormOverlay(
-            isVisible = isFormVisible,
-            onDismiss = { isFormVisible = false },
-            field1 = deviceNameField,
-            onField1Change = { deviceNameField = it },
-            field2 = deviceAddressField,
-            onField2Change = { deviceAddressField = it },
-            field3 = tokenField,
-            onField3Change = { tokenField = it },
-            field4 = connectionMethodField,
-            onField4Change = {connectionMethodField = it},
-            mainViewModel = mainViewModel,
-            relativeSizeInDpWidth = relativeSizeInDpWidth
-        )
-
-        DeviceNameFormOverlay(
-            isVisible = isDeviceNameFormVisible,
-            onDismiss = {isDeviceNameFormVisible= false},
-            field1 = QRScanDeviceNameField,
-            onField1Change = {QRScanDeviceNameField = it},
-            mainViewModel = mainViewModel,
-            scannedStringValue = scannedString,
-            deviceNameField = deviceNameField,
-            relativeSizeInDpWidth = relativeSizeInDpWidth
-        )
-
-        // QR Scanner Overlay
-        if (isScanning) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black)
-                    .zIndex(1f)
-            ) {
-                val executor = remember { Executors.newSingleThreadExecutor() }
-                var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
-
-                AndroidView(
-                    factory = { context ->
-                        PreviewView(context).apply {
-                            implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                        }
-                    },
-                    modifier = Modifier.fillMaxSize()
-                ) { previewView ->
-                    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-                    cameraProviderFuture.addListener({
-                        cameraProvider = cameraProviderFuture.get()
-                        val preview = Preview.Builder().build()
-                        preview.setSurfaceProvider(previewView.surfaceProvider)
-
-                        val imageAnalysis = ImageAnalysis.Builder()
-                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .build()
-
-                        val scanner = BarcodeScanning.getClient()
-                        val analyzer = ImageAnalysis.Analyzer { imageProxy ->
-                            val mediaImage = imageProxy.image
-                            if (mediaImage != null) {
-                                val image = InputImage.fromMediaImage(
-                                    mediaImage,
-                                    imageProxy.imageInfo.rotationDegrees
-                                )
-                                scanner.process(image)
-                                    .addOnSuccessListener { barcodes ->
-                                        for (barcode in barcodes) {
-                                            barcode.rawValue?.let { value ->
-                                                scannedString = value
-                                                isScanning = false
-                                                isDeviceNameFormVisible = true
-
-                                                // Cleanup resources
-                                                cameraProvider?.unbindAll()
-                                                scanner.close()
-                                                executor.shutdown()
-                                            }
-                                        }
-                                    }
-                                    .addOnCompleteListener {
-                                        imageProxy.close()
-                                    }
-                            } else {
-                                imageProxy.close()
-                            }
-                        }
-
-                        imageAnalysis.setAnalyzer(
-                            executor,
-                            analyzer
-                        )
-
-                        try {
-                            cameraProvider?.unbindAll()
-                            cameraProvider?.bindToLifecycle(
-                                lifecycleOwner,
-                                CameraSelector.DEFAULT_BACK_CAMERA,
-                                preview,
-                                imageAnalysis
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }, ContextCompat.getMainExecutor(context))
-                }
-
-// Clean up when the composable is disposed
-                DisposableEffect(Unit) {
-                    onDispose {
-                        cameraProvider?.unbindAll()
-                        executor.shutdown()
-                    }
-                }
-
-                // Close button for scanner
-                IconButton(
-                    onClick = { isScanning = false },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp)
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription = "Close Scanner",
-                        tint = Color.White
-                    )
-                }
-            }
-        }
-
-        // Permission Dialog
-        if (showPermissionDialog) {
-            AlertDialog(
-                onDismissRequest = { showPermissionDialog = false },
-                title = { Text("Camera Permission Required") },
-                text = { Text("The camera permission is required to use the QR scanner. Please grant the permission in app settings.") },
-                confirmButton = {
-                    TextButton(onClick = { showPermissionDialog = false }) {
-                        Text("OK")
-                    }
-                }
+        AnimatedVisibility(
+            visible = isFormVisible,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            FormOverlay(
+                isVisible = true,  // Always true since AnimatedVisibility controls visibility
+                onDismiss = { isFormVisible = false },
+                field1 = deviceNameField,
+                onField1Change = { deviceNameField = it },
+                field2 = deviceAddressField,
+                onField2Change = { deviceAddressField = it },
+                field3 = tokenField,
+                onField3Change = { tokenField = it },
+                field4 = connectionMethodField,
+                onField4Change = { connectionMethodField = it },
+                mainViewModel = mainViewModel,
+                relativeSizeInDpWidth = relativeSizeInDpWidth
             )
         }
+
+        // Device Name Form Overlay
+        AnimatedVisibility(
+            visible = isDeviceNameFormVisible,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            DeviceNameFormOverlay(
+                isVisible = true,  // Always true since AnimatedVisibility controls visibility
+                onDismiss = { isDeviceNameFormVisible = false },
+                field1 = QRScanDeviceNameField,
+                onField1Change = { QRScanDeviceNameField = it },
+                mainViewModel = mainViewModel,
+                scannedStringValue = scannedString,
+                deviceNameField = deviceNameField,
+                relativeSizeInDpWidth = relativeSizeInDpWidth
+            )
+        }
+
+
+        // QR Scanner Overlay
+        AnimatedVisibility(
+            visible = isScanning,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)
+                        .zIndex(1f)
+                ) {
+                    val executor = remember { Executors.newSingleThreadExecutor() }
+                    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
+
+                    AndroidView(
+                        factory = { context ->
+                            PreviewView(context).apply {
+                                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    ) { previewView ->
+                        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+                        cameraProviderFuture.addListener({
+                            cameraProvider = cameraProviderFuture.get()
+                            val preview = Preview.Builder().build()
+                            preview.setSurfaceProvider(previewView.surfaceProvider)
+
+                            val imageAnalysis = ImageAnalysis.Builder()
+                                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                .build()
+
+                            val scanner = BarcodeScanning.getClient()
+                            val analyzer = ImageAnalysis.Analyzer { imageProxy ->
+                                val mediaImage = imageProxy.image
+                                if (mediaImage != null) {
+                                    val image = InputImage.fromMediaImage(
+                                        mediaImage,
+                                        imageProxy.imageInfo.rotationDegrees
+                                    )
+                                    scanner.process(image)
+                                        .addOnSuccessListener { barcodes ->
+                                            for (barcode in barcodes) {
+                                                barcode.rawValue?.let { value ->
+                                                    scannedString = value
+                                                    isScanning = false
+                                                    isDeviceNameFormVisible = true
+
+                                                    // Cleanup resources
+                                                    cameraProvider?.unbindAll()
+                                                    scanner.close()
+                                                    executor.shutdown()
+                                                }
+                                            }
+                                        }
+                                        .addOnCompleteListener {
+                                            imageProxy.close()
+                                        }
+                                } else {
+                                    imageProxy.close()
+                                }
+                            }
+
+                            imageAnalysis.setAnalyzer(
+                                executor,
+                                analyzer
+                            )
+
+                            try {
+                                cameraProvider?.unbindAll()
+                                cameraProvider?.bindToLifecycle(
+                                    lifecycleOwner,
+                                    CameraSelector.DEFAULT_BACK_CAMERA,
+                                    preview,
+                                    imageAnalysis
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }, ContextCompat.getMainExecutor(context))
+                    }
+
+// Clean up when the composable is disposed
+                    DisposableEffect(Unit) {
+                        onDispose {
+                            cameraProvider?.unbindAll()
+                            executor.shutdown()
+                        }
+                    }
+
+                    // Close button for scanner
+                    IconButton(
+                        onClick = { isScanning = false },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Close Scanner",
+                            tint = Color.White
+                        )
+                    }
+                }
+        }
+
+            // Permission Dialog
+            if (showPermissionDialog) {
+                AlertDialog(
+                    onDismissRequest = { showPermissionDialog = false },
+                    title = { Text("Camera Permission Required") },
+                    text = { Text("The camera permission is required to use the QR scanner. Please grant the permission in app settings.") },
+                    confirmButton = {
+                        TextButton(onClick = { showPermissionDialog = false }) {
+                            Text("OK")
+                        }
+                    }
+                )
+            }
+
     }
 }
