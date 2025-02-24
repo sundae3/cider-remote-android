@@ -43,9 +43,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
-//import com.example.ciderremotetest1.uicomponents.Screen1
-//import com.example.ciderremotetest1.uicomponents.Screen2
-//import com.example.ciderremotetest1.uicomponents.Screen3
 
 
 data class CircleInfo(
