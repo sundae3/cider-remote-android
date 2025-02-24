@@ -1,4 +1,4 @@
-package com.example.ciderremotetest1.uicomponents
+package com.example.ciderremotetest1.ui.components.screens.screen1
 
 
 //import androidx.compose.foundation.background

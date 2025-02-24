@@ -11,9 +11,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.ciderremotetest1.repository.PlaybackRepositoryImpl
 import com.example.ciderremotetest1.repository.PreferencesRepository
 import com.example.ciderremotetest1.repository.SocketRepository
+import com.example.ciderremotetest1.ui.components.MyApp
 import com.example.ciderremotetest1.viewmodel.MainViewModel
 import com.example.ciderremotetest1.viewmodel.MainViewModelFactory
-import com.example.ciderremotetest1.uicomponents.MyApp
+//import com.example.ciderremotetest1.ui.components.MyApp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

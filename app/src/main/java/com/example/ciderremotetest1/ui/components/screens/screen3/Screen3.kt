@@ -1,4 +1,4 @@
-package com.example.ciderremotetest1.uicomponents
+package com.example.ciderremotetest1.ui.components.screens.screen3
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
