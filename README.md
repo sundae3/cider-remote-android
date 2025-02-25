@@ -45,5 +45,5 @@ It's practically a one-time setup, and settings will be saved for future use.
 </p>
 
 ## Bugs and Crashes
-Ping me on the Cider Discord server if you find any bugs or if the app crashes
+Ping me on the Cider Discord server if you find any bugs or if the app crashes.
 
