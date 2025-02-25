@@ -1,5 +1,6 @@
 package com.example.ciderremotetest1.ui.components.screens.screen2
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 //import androidx.compose.foundation.gestures.detectDragGestures
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 //import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +28,16 @@ import androidx.compose.ui.unit.times
 //import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ciderremotetest1.R
 import com.example.ciderremotetest1.viewmodel.MainViewModel
+
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import android.net.Uri
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withLink
 
 //@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -370,7 +382,12 @@ fun Screen2(mainViewModel: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()) {
             Text("Add device First", color = Color.White, fontSize = 30.sp)
+//            Text("Setup guide")
+            Column(modifier = Modifier.padding(vertical = 10.dp)) {
+                AnnotatedStringWithLinkSample()
+            }
         }
+
     }
 }
 
@@ -386,3 +403,25 @@ fun CustomSliderThumb(
             .background(color)
     )
 }
+
+@Composable
+fun AnnotatedStringWithLinkSample() {
+    // Display multiple links in the text
+    Text(
+        buildAnnotatedString {
+            withStyle(style = SpanStyle(color = Color.White, fontWeight = FontWeight.Normal)) {
+                append("Setup guide ")
+            }
+            withLink(
+                LinkAnnotation.Url(
+                    "https://github.com/sundae3/cider-remote-android",
+                    TextLinkStyles(style = SpanStyle(color = MaterialTheme.colorScheme.secondary))
+                )
+            ) {
+                append("here")
+            }
+
+        }
+    , fontSize = 20.sp)
+}
+

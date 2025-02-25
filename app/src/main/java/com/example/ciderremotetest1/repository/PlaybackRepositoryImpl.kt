@@ -2,7 +2,10 @@ package com.example.ciderremotetest1.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -13,6 +16,7 @@ import androidx.palette.graphics.Palette
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.toBitmap
+import com.example.ciderremotetest1.R
 import com.example.ciderremotetest1.model.NowPlayingJsonMaker
 import com.example.ciderremotetest1.model.QueueJsonMaker
 import com.example.ciderremotetest1.model.isCurrentlyplayingJsonMaker
@@ -24,25 +28,35 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import java.lang.Exception
 
 class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository {
     private val client = OkHttpClient()
 
-    private val _topColors =  mutableStateOf<List<Color>>(listOf(Color.Gray, Color.Gray, Color.White, Color.Black, Color.DarkGray, Color.DarkGray))
+    val sakiColorPalette = listOf(
+        Color(0xFFFF3456),  // Bright pink/red (background and hair)
+        Color(0xFFFFBBCC),  // Light pink (skin tone)
+        Color(0xFF8A2BE2),  // Purple (eyes and ear details)
+        Color(0xFF221133),  // Dark purple/black (outline and dark elements)
+        Color(0xFFFFFFFF)   // White (hair accessories and highlights)
+    )
+
+    private val _topColors =  mutableStateOf<List<Color>>(sakiColorPalette)
     override val topColors: State<List<Color>> = _topColors
 
 
     fun createDummyImageBitmap(): ImageBitmap {
-        // Create a 1x1 Bitmap (you can increase the size as needed)
+        // Create a 1x1 Bitmap
         val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
         // Set the pixel to a color (e.g., white)
-        bitmap.setPixel(0, 0, Color.White.toArgb()) // Set to white or any color you need
+        bitmap.setPixel(0, 0, Color(0xFFcf164f).toArgb())
 
         // Convert the Bitmap to ImageBitmap (Compose-compatible)
         return bitmap.asImageBitmap()
     }
+
     // Now make _imageBitmap non-nullable
     private val _imageBitmap = mutableStateOf(createDummyImageBitmap())
 
