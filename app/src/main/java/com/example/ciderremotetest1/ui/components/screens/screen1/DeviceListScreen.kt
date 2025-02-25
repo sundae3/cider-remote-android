@@ -69,7 +69,7 @@ fun DeviceListScreen(
                 color = Color.White,
                 modifier = Modifier.padding(
                     start = (relativeSizeInDp * 2.5f) + (iconSizeDp * 0.1f),
-                    bottom = relativeSizeInDp * 3f
+                    bottom = relativeSizeInDp * 2f
                 )
             )
 
@@ -89,7 +89,7 @@ fun DeviceListScreen(
                         .fillMaxWidth()
                         .padding(
                             horizontal = relativeSizeInDp,
-                            vertical = relativeSizeInDp * 2.5f
+                            vertical = relativeSizeInDp * 1f
                         )
                 ) {
                     Row(
@@ -151,8 +151,8 @@ fun DeviceListScreen(
                 modifier = Modifier
                     .padding(
                         start = (relativeSizeInDp * 2.5f) + (iconSizeDp * 0.1f),
-                        bottom = relativeSizeInDp * 3f,
-                        top = relativeSizeInDp * 3f
+                        bottom = relativeSizeInDp * 1f,
+                        top = relativeSizeInDp * 2f
                     )
             )
 
@@ -211,7 +211,7 @@ private fun DeviceCard(
                 .fillMaxWidth()
                 .padding(
                     horizontal = relativeSizeInDp,
-                    vertical = relativeSizeInDp * 2.5f
+                    vertical = relativeSizeInDp * 1f
                 )
         ) {
             Row(
