@@ -160,7 +160,7 @@ fun Screen2(mainViewModel: MainViewModel) {
 
         Slider(
             value = mainViewModel.trackProgress.value,
-            modifier = Modifier.height(10.dp).padding(start = 10.dp, top = 30.dp, end =10.dp),
+            modifier = Modifier.height(10.dp).padding(start = 15.dp, top = 30.dp, end =15.dp),
             colors = SliderDefaults.colors(
                 thumbColor = Color.White, // Remove thumb by setting it to transparent
                 activeTrackColor = Color.White, // Customize the active part of the track
@@ -210,7 +210,7 @@ fun Screen2(mainViewModel: MainViewModel) {
         )
 
         Column {
-            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(top = 35.dp, start = 22.dp, end = 22.dp)) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(top = 35.dp, start = 17.dp, end = 17.dp)) {
                 Text("${min}:${sec}", color = mainbuttons_tint)
                 Text(total_time_string,  color = mainbuttons_tint)
             }
