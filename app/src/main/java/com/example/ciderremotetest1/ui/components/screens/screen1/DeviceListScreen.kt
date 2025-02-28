@@ -35,7 +35,8 @@ fun DeviceListScreen(
 
     val characterLimitDeviceNameDp = remember(screenWidth) {
         when {
-            screenWidth < 400.dp -> 15 // Small phones
+            screenWidth < 400.dp -> 12 // Small phones
+            screenWidth < 500.dp -> 18 // Small phones
             screenWidth < 600.dp -> 30 // Normal phones
             screenWidth < 840.dp -> 40 // Large phones/Small tablets
             else -> 50 // Tablets and larger
@@ -44,8 +45,10 @@ fun DeviceListScreen(
 
     val characterLimitDeviceDataDp = remember(screenWidth) {
         when {
-            screenWidth < 340.dp -> 15
-            screenWidth < 361.dp -> 20 // Small phones
+            screenWidth < 340.dp -> 10
+            screenWidth < 361.dp -> 15 // Small phones
+            screenWidth < 450.dp -> 20 // Small phones
+            screenWidth < 500.dp -> 25 // Small phones
             screenWidth < 600.dp -> 30 // Normal phones
             screenWidth < 840.dp -> 50 // Large phones/Small tablets
             else -> 60 // Tablets and larger
@@ -74,7 +77,7 @@ fun DeviceListScreen(
                         bottom = relativeSizeInDp * 2f
                     )
                 )
-                
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -115,7 +118,7 @@ fun DeviceListScreen(
 
                                 Column(
                                     modifier = Modifier.padding(
-                                        start = relativeSizeInDp,
+                                        start = relativeSizeInDp*0.3f,
                                         top = relativeSizeInDp * 0.8f,
                                         bottom = relativeSizeInDp * 0.8f
                                     )
@@ -240,7 +243,7 @@ private fun DeviceCard(
                         )
 
 
-                    Column(modifier = Modifier.padding(start = relativeSizeInDp, top=relativeSizeInDp*0.8f, bottom = relativeSizeInDp*0.8f)) {
+                    Column(modifier = Modifier.padding(start = relativeSizeInDp*0.3f, top=relativeSizeInDp*0.8f, bottom = relativeSizeInDp*0.8f)) {
                         Text(
                             shortenString(
                                 device.deviceName,
