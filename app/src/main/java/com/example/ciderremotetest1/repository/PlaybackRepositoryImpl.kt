@@ -2,7 +2,10 @@ package com.example.ciderremotetest1.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -13,6 +16,7 @@ import androidx.palette.graphics.Palette
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.toBitmap
+import com.example.ciderremotetest1.R
 import com.example.ciderremotetest1.model.NowPlayingJsonMaker
 import com.example.ciderremotetest1.model.QueueJsonMaker
 import com.example.ciderremotetest1.model.isCurrentlyplayingJsonMaker
@@ -24,25 +28,35 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import java.lang.Exception
 
 class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository {
     private val client = OkHttpClient()
 
-    private val _topColors =  mutableStateOf<List<Color>>(listOf(Color.Gray, Color.Gray, Color.White, Color.Black, Color.DarkGray, Color.DarkGray))
+    val sakiColorPalette = listOf(
+        Color(0xFFFF3456),  // Bright pink/red (background and hair)
+        Color(0xFFFFBBCC),  // Light pink (skin tone)
+        Color(0xFF8A2BE2),  // Purple (eyes and ear details)
+        Color(0xFF221133),  // Dark purple/black (outline and dark elements)
+        Color(0xFFFFFFFF)   // White (hair accessories and highlights)
+    )
+
+    private val _topColors =  mutableStateOf<List<Color>>(sakiColorPalette)
     override val topColors: State<List<Color>> = _topColors
 
 
     fun createDummyImageBitmap(): ImageBitmap {
-        // Create a 1x1 Bitmap (you can increase the size as needed)
+        // Create a 1x1 Bitmap
         val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
         // Set the pixel to a color (e.g., white)
-        bitmap.setPixel(0, 0, Color.White.toArgb()) // Set to white or any color you need
+        bitmap.setPixel(0, 0, Color(0xFFcf164f).toArgb())
 
         // Convert the Bitmap to ImageBitmap (Compose-compatible)
         return bitmap.asImageBitmap()
     }
+
     // Now make _imageBitmap non-nullable
     private val _imageBitmap = mutableStateOf(createDummyImageBitmap())
 
@@ -137,11 +151,12 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
 
 
     // Remove the custom CoroutineScope for better management of suspend functions
-    override suspend fun fetchNowPlayingData(url: String): NowPlayingJsonMaker? {
+    override suspend fun fetchNowPlayingData(url: String, token: String): NowPlayingJsonMaker? {
         println(url)
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/now-playing")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -177,11 +192,12 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun fetchCurrentQueue(url: String): List<QueueJsonMaker>? {
+    override suspend fun fetchCurrentQueue(url: String, token: String): List<QueueJsonMaker>? {
         println(url)
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/queue")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -220,10 +236,11 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun isCurrentlyPlaying(url: String): isCurrentlyplayingJsonMaker? {
+    override suspend fun isCurrentlyPlaying(url: String, token: String): isCurrentlyplayingJsonMaker? {
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/is-playing")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -257,10 +274,11 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun volumeStateFetcher(url: String): volumeStateJsonMaker? {
+    override suspend fun volumeStateFetcher(url: String, token: String): volumeStateJsonMaker? {
         return withContext(Dispatchers.IO) {  // Ensure the network request runs on the IO thread
             val request = Request.Builder()
                 .url(url + "/api/v1/playback/volume")
+                .header("apptoken", token)  // Add the Authorization header
                 .build()
 
             try {
@@ -294,7 +312,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun makePostRequest(url: String): String {
+    override suspend fun makePostRequest(url: String, token: String): String {
         return withContext(Dispatchers.IO) {  // Dispatching to IO thread
             // JSON body for the POST request
             val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -308,6 +326,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
 
             val request = Request.Builder()
                 .url(url) // Use the provided URL for the POST request
+                .header("apptoken", token)  // Add the Authorization header
                 .post(body)  // Set the POST method with the body
                 .build()
 
@@ -331,7 +350,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
         }
     }
 
-    override suspend fun makePostRequestWithBody(url: String, body:String): String {
+    override suspend fun makePostRequestWithBody(url: String, token: String, body:String): String {
         return withContext(Dispatchers.IO) {  // Dispatching to IO thread
             // JSON body for the POST request
             val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -341,6 +360,7 @@ class PlaybackRepositoryImpl(private val context: Context) : PlaybackRepository 
 
             val request = Request.Builder()
                 .url(url) // Use the provided URL for the POST request
+                .header("apptoken", token)  // Add the Authorization header
                 .post(body)  // Set the POST method with the body
                 .build()
 

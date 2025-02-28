@@ -147,3 +147,25 @@ data class trackdata(
     val name: String,
     val artistName: String,
 )
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+data class CiderInstanceData(
+    @EncodeDefault
+    val id: String = "",
+    val deviceName: String = "",
+    val url: String = "",
+    val method: String = "",
+    val token: String = ""
+)
+
+@OptIn(ExperimentalSerializationApi::class)
+@JsonIgnoreUnknownKeys
+@Serializable
+data class QRScanJson(
+    @EncodeDefault
+    val address: String,
+    val token: String,
+    val method: String,
+    val os: String = "win"
+)

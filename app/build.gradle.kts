@@ -12,9 +12,10 @@ android {
     defaultConfig {
         applicationId = "com.example.ciderremotetest1"
         minSdk = 25
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.1.0"
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 35
+        versionCode = 4
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -61,65 +62,50 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("androidx.compose.ui:ui:1.4.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0")
-    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.compose.ui:ui:1.7.8")
+    implementation("androidx.compose.material3:material3:1.3.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
+    implementation("androidx.activity:activity-compose:1.10.1")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 
     // OkHttp
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Kotlin Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     // Coroutine support
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-
-    // Compose tooling for debugging
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.0")
-
-    // Test dependencies
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.0")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
     implementation ("io.socket:socket.io-client:2.0.1")
-//    implementation("io.coil-kt:coil-compose:3.0.0")
 
-    implementation("androidx.compose.ui:ui:1.4.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.8.8")
 
-//    implementation("androidx.datastore:datastore-preferences-core:1.1.1")
 
     // DataStore dependencies
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.3")
 
     // Jetpack Compose dependencies
-    implementation("androidx.compose.ui:ui:1.4.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.4.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.8")
 
-    // Lifecycle ViewModel for Compose
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
-    implementation("androidx.activity:activity-compose:1.7.0")
 
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-
-    implementation("androidx.compose.foundation:foundation:1.4.0")
+    implementation("androidx.compose.foundation:foundation:1.7.8")
     implementation("sh.calvin.reorderable:reorderable:2.4.3")
-    implementation("androidx.core:core-ktx:1.10.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation("androidx.core:core-ktx:1.15.0")
+
+    //scanner dependcies
+    implementation("androidx.camera:camera-camera2:1.4.1")
+    implementation("androidx.camera:camera-lifecycle:1.4.1")
+    implementation("androidx.camera:camera-view:1.4.1")
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
+
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
 
     // Lifecycle ViewModel
 }

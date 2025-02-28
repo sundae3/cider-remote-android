@@ -108,7 +108,7 @@ class SocketRepository {
                         if(!interactionFlagged.value) {
                             _trackProgress.value = prog
 
-                            println(_trackProgress.value)
+//                            println(_trackProgress.value)
 //                            _currentTimeString.value = "${min}:${sec}"
 
                         }

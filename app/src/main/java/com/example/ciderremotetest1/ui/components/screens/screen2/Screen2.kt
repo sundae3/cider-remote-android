@@ -1,5 +1,6 @@
-package com.example.ciderremotetest1.uicomponents
+package com.example.ciderremotetest1.ui.components.screens.screen2
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 //import androidx.compose.foundation.gestures.detectDragGestures
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 //import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,11 +29,22 @@ import androidx.compose.ui.unit.times
 import com.example.ciderremotetest1.R
 import com.example.ciderremotetest1.viewmodel.MainViewModel
 
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import android.net.Uri
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withLink
+
 //@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Screen2(mainViewModel: MainViewModel) {
     var nowPlaying = mainViewModel.nowPlayingData.value.info
+    var isConnected = mainViewModel.nowPlayingData.value.status
     val timeProgress2 by remember { mainViewModel.trackProgress }
     var timeProgress3 = "${timeProgress2.toInt()/60}:${timeProgress2.toInt()%60}"
 
@@ -52,6 +65,7 @@ fun Screen2(mainViewModel: MainViewModel) {
     }
     var shuffleMode = mainViewModel.shuffleState.value
     var repeatMode = mainViewModel.repeatState.value
+    var userUrl = mainViewModel.baseUserUrl.value
     var fixedArtworkUrl = nowPlaying.artwork.url.replace("{w}x{h}", "512x512")
     val playPauseUrl = "/api/v1/playback/playpause"
     val nextUrl = "/api/v1/playback/next"
@@ -104,6 +118,7 @@ fun Screen2(mainViewModel: MainViewModel) {
 
     val relativeSizeInDpWidth5dp = (1f/ 100f) * screenWidth.value.dp
 
+    if(userUrl != "" && isConnected !="") {
 
     Column(modifier = Modifier.padding(horizontal = 10.dp)) {
         mainViewModel.ImageLoader(fixedArtworkUrl)
@@ -145,7 +160,7 @@ fun Screen2(mainViewModel: MainViewModel) {
 
         Slider(
             value = mainViewModel.trackProgress.value,
-            modifier = Modifier.height(10.dp).padding(start = 10.dp, top = 30.dp, end =10.dp),
+            modifier = Modifier.height(10.dp).padding(start = 15.dp, top = 30.dp, end =15.dp),
             colors = SliderDefaults.colors(
                 thumbColor = Color.White, // Remove thumb by setting it to transparent
                 activeTrackColor = Color.White, // Customize the active part of the track
@@ -195,7 +210,7 @@ fun Screen2(mainViewModel: MainViewModel) {
         )
 
         Column {
-            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(top = 35.dp, start = 22.dp, end = 22.dp)) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(top = 35.dp, start = 17.dp, end = 17.dp)) {
                 Text("${min}:${sec}", color = mainbuttons_tint)
                 Text(total_time_string,  color = mainbuttons_tint)
             }
@@ -243,7 +258,7 @@ fun Screen2(mainViewModel: MainViewModel) {
                     Icon(
                         painter = painterResource(id = middle_button_icon), // Your vector drawable XML resource
                         contentDescription = "Example Icon",
-                        modifier = Modifier.size(iconSize * 1f), // Icon size
+                        modifier = Modifier.size(iconSize * 0.9f), // Icon size
                         tint = mainbuttons_tint
                     )
                 }
@@ -353,7 +368,25 @@ fun Screen2(mainViewModel: MainViewModel) {
             }
         }
 
+    }
 
+    } else if(isConnected == "" && userUrl != "") {
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()) {
+            Text("Not Connected yet", color = Color.White, fontSize = 30.sp)
+        }
+    }
+    else {
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()) {
+            Text("Add device First", color = Color.White, fontSize = 30.sp)
+//            Text("Setup guide")
+            Column(modifier = Modifier.padding(vertical = 10.dp)) {
+                AnnotatedStringWithLinkSample()
+            }
+        }
 
     }
 }
@@ -370,3 +403,25 @@ fun CustomSliderThumb(
             .background(color)
     )
 }
+
+@Composable
+fun AnnotatedStringWithLinkSample() {
+    // Display multiple links in the text
+    Text(
+        buildAnnotatedString {
+            withStyle(style = SpanStyle(color = Color.White, fontWeight = FontWeight.Normal)) {
+                append("Setup guide ")
+            }
+            withLink(
+                LinkAnnotation.Url(
+                    "https://github.com/sundae3/cider-remote-android",
+                    TextLinkStyles(style = SpanStyle(color = MaterialTheme.colorScheme.secondary))
+                )
+            ) {
+                append("here")
+            }
+
+        }
+    , fontSize = 20.sp)
+}
+
