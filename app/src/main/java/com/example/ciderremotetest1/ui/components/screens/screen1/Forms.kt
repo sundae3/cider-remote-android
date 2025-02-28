@@ -42,7 +42,8 @@ fun FormOverlay(
     field4: String,
     onField4Change: (String) -> Unit,
     mainViewModel: MainViewModel,
-    relativeSizeInDpWidth: Dp
+    relativeSizeInDpWidth: Dp,
+    deviceFieldsResetter: () -> Unit
 ) {
     if (isVisible) {
         // Background Box with blur effect
@@ -197,6 +198,7 @@ fun FormOverlay(
                             println("Field 3: $field3")
                             mainViewModel.manualDeviceSubmitter(deviceName = field1, url = field2, token = field3, method = field4.lowercase())
                             // Dismiss the form
+                            deviceFieldsResetter()
                             onDismiss()
                         },
                         modifier = Modifier.weight(1f)
@@ -223,7 +225,8 @@ fun DeviceNameFormOverlay(
     scannedStringValue: String,
     mainViewModel: MainViewModel,
     deviceNameField: String,
-    relativeSizeInDpWidth: Dp
+    relativeSizeInDpWidth: Dp,
+    deviceNameFieldResetter: () -> Unit
 ) {
     if (isVisible) {
         Box(
@@ -313,6 +316,7 @@ fun DeviceNameFormOverlay(
                                 println("Form submitted with values:")
                                 mainViewModel.qrScanSubmiter(scannedStringValue,field1)
                                 // Dismiss the form
+                                deviceNameFieldResetter()
                                 onDismiss()
                             },
                             modifier = Modifier.weight(1f)

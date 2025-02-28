@@ -177,7 +177,13 @@ fun Screen1(mainViewModel: MainViewModel) {
                 field4 = connectionMethodField,
                 onField4Change = { connectionMethodField = it },
                 mainViewModel = mainViewModel,
-                relativeSizeInDpWidth = relativeSizeInDpWidthDp
+                relativeSizeInDpWidth = relativeSizeInDpWidthDp,
+                deviceFieldsResetter = {
+                    deviceNameField = ""
+                    deviceAddressField = ""
+                    tokenField = ""
+                    connectionMethodField = ""
+                }
             )
         }
 
@@ -195,7 +201,8 @@ fun Screen1(mainViewModel: MainViewModel) {
                 mainViewModel = mainViewModel,
                 scannedStringValue = scannedString,
                 deviceNameField = deviceNameField,
-                relativeSizeInDpWidth = relativeSizeInDpWidthDp
+                relativeSizeInDpWidth = relativeSizeInDpWidthDp,
+                deviceNameFieldResetter = {QRScanDeviceNameField =""}
             )
         }
 
