@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -34,7 +35,7 @@ fun DeviceListScreen(
 
     val characterLimitDeviceNameDp = remember(screenWidth) {
         when {
-            screenWidth < 400.dp -> 20 // Small phones
+            screenWidth < 400.dp -> 15 // Small phones
             screenWidth < 600.dp -> 30 // Normal phones
             screenWidth < 840.dp -> 40 // Large phones/Small tablets
             else -> 50 // Tablets and larger
@@ -43,8 +44,8 @@ fun DeviceListScreen(
 
     val characterLimitDeviceDataDp = remember(screenWidth) {
         when {
-            screenWidth < 300.dp -> 20
-            screenWidth < 361.dp -> 25 // Small phones
+            screenWidth < 340.dp -> 15
+            screenWidth < 361.dp -> 20 // Small phones
             screenWidth < 600.dp -> 30 // Normal phones
             screenWidth < 840.dp -> 50 // Large phones/Small tablets
             else -> 60 // Tablets and larger
@@ -64,11 +65,11 @@ fun DeviceListScreen(
         ) {
             // 1. Selected Device section
             Text(
-                "Selected Device",
+                "Current Device",
                 fontSize = 25.sp,
                 color = Color.White,
                 modifier = Modifier.padding(
-                    start = (relativeSizeInDp * 2.5f) + (iconSizeDp * 0.1f),
+                    start = (relativeSizeInDp * 2f) + (iconSizeDp * 0.1f),
                     bottom = relativeSizeInDp * 2f
                 )
             )
@@ -76,12 +77,12 @@ fun DeviceListScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(relativeSizeInDp / 2f),
+                    .padding(vertical = relativeSizeInDp / 2f, horizontal = relativeSizeInDp*3),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 0.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.White.copy(alpha = 0.2f)
                 )
             ) {
                 Column(
@@ -96,25 +97,19 @@ fun DeviceListScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             if (selectedObjectState.url != "") {
-                                Button(
-                                    onClick = { },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                                    contentPadding = PaddingValues(iconSizeDp * 0.1f),
-                                    modifier = Modifier
-                                        .defaultMinSize(
-                                            minWidth = 1.dp,
-                                            minHeight = 1.dp
-                                        )
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.radio_button_fill),
-                                        contentDescription = "Radio Icon",
-                                    )
-                                }
+                                Icon(
+                                    painter = painterResource(R.drawable.desktop),
+                                    contentDescription = "Radio Icon",
+                                    tint = Color.White,
+                                    modifier = Modifier.padding(horizontal = relativeSizeInDp*2f)
+                                )
 
-                                Column(modifier = Modifier.padding(start = relativeSizeInDp * 2f)) {
+                                Column(modifier = Modifier.padding(start = relativeSizeInDp,top=relativeSizeInDp*0.8f, bottom = relativeSizeInDp*0.8f)) {
                                     Text(
                                         shortenString(
                                             selectedObjectState.deviceName,
@@ -131,11 +126,11 @@ fun DeviceListScreen(
                                         color = Color.LightGray,
                                         fontSize = 15.sp
                                     )
-                                    Text(
-                                        selectedObjectState.method,
-                                        color = Color.LightGray,
-                                        fontSize = 15.sp
-                                    )
+//                                    Text(
+//                                        selectedObjectState.method,
+//                                        color = Color.LightGray,
+//                                        fontSize = 15.sp
+//                                    )
                                 }
                             }
                         }
@@ -150,7 +145,7 @@ fun DeviceListScreen(
                 color = Color.White,
                 modifier = Modifier
                     .padding(
-                        start = (relativeSizeInDp * 2.5f) + (iconSizeDp * 0.1f),
+                        start = (relativeSizeInDp * 2f) + (iconSizeDp * 0.1f),
                         bottom = relativeSizeInDp * 1f,
                         top = relativeSizeInDp * 2f
                     )
@@ -194,14 +189,15 @@ private fun DeviceCard(
     shortenString: (String, Int) -> String
 ) {
     Card(
+        onClick = {onSelectDevice(device.id)},
         modifier = Modifier
             .fillMaxWidth()
-            .padding(relativeSizeInDp / 2f),
+            .padding(vertical = relativeSizeInDp / 2f, horizontal = relativeSizeInDp*3),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+            containerColor = Color.White.copy(alpha = 0.1f)
         )
     ) {
         var showDeleteDialog by remember { mutableStateOf(false) }
@@ -216,28 +212,22 @@ private fun DeviceCard(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row {
-                    Button(
-                        onClick = { onSelectDevice(device.id) },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        ),
-                        contentPadding = PaddingValues(iconSizeDp * 0.1f),
-                        modifier = Modifier
-                            .defaultMinSize(
-                                minWidth = 1.dp,
-                                minHeight = 1.dp
-                            )
-                    ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                         Icon(
-                            painter = painterResource(R.drawable.radio_button),
+                            painter = painterResource(R.drawable.desktop),
                             contentDescription = "Radio Icon",
+                            tint = Color.White,
+                            modifier = Modifier.padding(horizontal = relativeSizeInDp*2f)
                         )
-                    }
 
-                    Column(modifier = Modifier.padding(start = relativeSizeInDp * 2f)) {
+
+                    Column(modifier = Modifier.padding(start = relativeSizeInDp, top=relativeSizeInDp*0.8f, bottom = relativeSizeInDp*0.8f)) {
                         Text(
                             shortenString(
                                 device.deviceName,
@@ -246,19 +236,22 @@ private fun DeviceCard(
                             color = Color.White,
                             fontSize = 20.sp
                         )
-                        Text(
-                            shortenString(
-                                device.url,
-                                characterLimitDeviceData
-                            ),
-                            color = Color.LightGray,
-                            fontSize = 15.sp
-                        )
-                        Text(
-                            device.method,
-                            color = Color.LightGray,
-                            fontSize = 15.sp
-                        )
+                            Text(
+                                shortenString(
+                                    device.url,
+                                    characterLimitDeviceData
+                                ),
+                                color = Color.LightGray,
+                                fontSize = 15.sp,
+
+                                )
+//                            Text(
+//                                device.method,
+//                                color = Color.LightGray,
+//                                fontSize = 14.sp
+//                            )
+
+
                     }
                 }
 
@@ -273,7 +266,7 @@ private fun DeviceCard(
                         )
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.x_circle),
+                        painter = painterResource(R.drawable.x),
                         contentDescription = "Delete Icon",
                     )
                 }

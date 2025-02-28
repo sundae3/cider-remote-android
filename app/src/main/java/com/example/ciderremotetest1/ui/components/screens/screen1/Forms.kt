@@ -248,7 +248,7 @@ fun DeviceNameFormOverlay(
                         .wrapContentSize()
                         .clip(RoundedCornerShape(16.dp))
                         .background(color = Color.Black.copy(alpha = 0.4f))
-                        .padding(relativeSizeInDpWidth*10f)
+                        .padding(relativeSizeInDpWidth*5f)
                     ,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -256,7 +256,7 @@ fun DeviceNameFormOverlay(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 16.dp, top=10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

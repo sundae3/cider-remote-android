@@ -1,7 +1,9 @@
 package com.example.ciderremotetest1.ui.components.screens.screen1
 
 import android.content.Context
+import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -36,6 +38,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 
+@OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScanner(
     isScanning: Boolean,
@@ -89,7 +92,7 @@ fun QRScanner(
                                     for (barcode in barcodes) {
                                         barcode.rawValue?.let { value ->
                                             onScanComplete(value)
-
+                                            println(value)
                                             // Cleanup resources
                                             cameraProvider?.unbindAll()
                                             scanner.close()

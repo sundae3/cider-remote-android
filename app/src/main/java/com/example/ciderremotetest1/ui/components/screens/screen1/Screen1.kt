@@ -100,11 +100,11 @@ fun Screen1(mainViewModel: MainViewModel) {
                         // Form FAB
                         FloatingActionButton(
                             onClick = { isFormVisible = true },
-                            containerColor = MaterialTheme.colorScheme.secondary,
+                            containerColor = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(end = 8.dp)
                         ) {
                             Icon(
-                                Icons.Default.Edit,
+                                painter = painterResource(R.drawable.plus_circle),
                                 contentDescription = "Show Form",
                                 tint = Color.White
                             )
@@ -127,7 +127,8 @@ fun Screen1(mainViewModel: MainViewModel) {
                                     }
                                 }
                             },
-                            containerColor = MaterialTheme.colorScheme.primary
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(end = 8.dp)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.qr_code), // Your vector drawable XML resource
