@@ -63,54 +63,63 @@ fun DeviceListScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // 1. Selected Device section
-            Text(
-                "Current Device",
-                fontSize = 25.sp,
-                color = Color.White,
-                modifier = Modifier.padding(
-                    start = (relativeSizeInDp * 2f) + (iconSizeDp * 0.1f),
-                    bottom = relativeSizeInDp * 2f
-                )
-            )
             if (selectedObjectState.url != "") {
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = relativeSizeInDp / 2f, horizontal = relativeSizeInDp*3),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 0.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.2f)
+                // 1. Selected Device section
+                Text(
+                    "Current Device",
+                    fontSize = 25.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(
+                        start = (relativeSizeInDp * 2f) + (iconSizeDp * 0.1f),
+                        bottom = relativeSizeInDp * 2f
+                    )
                 )
-            ) {
-                Column(
+                
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            horizontal = relativeSizeInDp,
-                            vertical = relativeSizeInDp * 1f
-                        )
+                            vertical = relativeSizeInDp / 2f,
+                            horizontal = relativeSizeInDp * 3
+                        ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 0.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.2f)
+                    )
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = relativeSizeInDp,
+                                vertical = relativeSizeInDp * 1f
+                            )
                     ) {
                         Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
                                 Icon(
                                     painter = painterResource(R.drawable.desktop),
                                     contentDescription = "Radio Icon",
                                     tint = Color.White,
-                                    modifier = Modifier.padding(horizontal = relativeSizeInDp*2f)
+                                    modifier = Modifier.padding(horizontal = relativeSizeInDp * 2f)
                                 )
 
-                                Column(modifier = Modifier.padding(start = relativeSizeInDp,top=relativeSizeInDp*0.8f, bottom = relativeSizeInDp*0.8f)) {
+                                Column(
+                                    modifier = Modifier.padding(
+                                        start = relativeSizeInDp,
+                                        top = relativeSizeInDp * 0.8f,
+                                        bottom = relativeSizeInDp * 0.8f
+                                    )
+                                ) {
                                     Text(
                                         shortenString(
                                             selectedObjectState.deviceName,
@@ -139,39 +148,42 @@ fun DeviceListScreen(
                 }
             }
 
-            // All Devices Header
-            Text(
-                "All Devices",
-                fontSize = 25.sp,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(
-                        start = (relativeSizeInDp * 2f) + (iconSizeDp * 0.1f),
-                        bottom = relativeSizeInDp * 1f,
-                        top = relativeSizeInDp * 2f
-                    )
-            )
+            if (selectedObjectState.url != "") {
 
-            Spacer(modifier = Modifier.height(relativeSizeInDp))
+                // All Devices Header
+                Text(
+                    "All Devices",
+                    fontSize = 25.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(
+                            start = (relativeSizeInDp * 2f) + (iconSizeDp * 0.1f),
+                            bottom = relativeSizeInDp * 1f,
+                            top = relativeSizeInDp * 2f
+                        )
+                )
 
-            // 2. Device List Section
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                state = lazyListState
-            ) {
-                items(objectListState, key = { it.id }) { item ->
-                    DeviceCard(
-                        device = item,
-                        relativeSizeInDp = relativeSizeInDp,
-                        iconSizeDp = iconSizeDp,
-                        characterLimitDeviceName = characterLimitDeviceNameDp,
-                        characterLimitDeviceData = characterLimitDeviceDataDp,
-                        onSelectDevice = onSelectDevice,
-                        onDeleteDevice = onDeleteDevice,
-                        shortenString = shortenString
-                    )
+                Spacer(modifier = Modifier.height(relativeSizeInDp))
+
+                // 2. Device List Section
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    state = lazyListState
+                ) {
+                    items(objectListState, key = { it.id }) { item ->
+                        DeviceCard(
+                            device = item,
+                            relativeSizeInDp = relativeSizeInDp,
+                            iconSizeDp = iconSizeDp,
+                            characterLimitDeviceName = characterLimitDeviceNameDp,
+                            characterLimitDeviceData = characterLimitDeviceDataDp,
+                            onSelectDevice = onSelectDevice,
+                            onDeleteDevice = onDeleteDevice,
+                            shortenString = shortenString
+                        )
+                    }
                 }
             }
         }

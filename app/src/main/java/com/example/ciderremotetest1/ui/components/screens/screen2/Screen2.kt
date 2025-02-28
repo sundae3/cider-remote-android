@@ -374,7 +374,7 @@ fun Screen2(mainViewModel: MainViewModel) {
         Column(verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()) {
-            Text("Not Connected to Cider", color = Color.White, fontSize = 30.sp)
+            Text("Not Connected yet", color = Color.White, fontSize = 30.sp)
         }
     }
     else {
