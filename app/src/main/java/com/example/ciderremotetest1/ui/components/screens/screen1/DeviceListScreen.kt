@@ -73,6 +73,7 @@ fun DeviceListScreen(
                     bottom = relativeSizeInDp * 2f
                 )
             )
+            if (selectedObjectState.url != "") {
 
             Card(
                 modifier = Modifier
@@ -101,7 +102,7 @@ fun DeviceListScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if (selectedObjectState.url != "") {
+
                                 Icon(
                                     painter = painterResource(R.drawable.desktop),
                                     contentDescription = "Radio Icon",
