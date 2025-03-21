@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
@@ -22,6 +23,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.ciderremotetest1.R
 import com.example.ciderremotetest1.model.CiderInstanceData
 import com.example.ciderremotetest1.model.NowPlayingJsonMaker
@@ -549,7 +551,7 @@ class MainViewModel(private val socketRepository: SocketRepository,private val p
                 .padding(15.dp)
                 .clip(RoundedCornerShape(12.dp)),
             placeholder = painterResource(id = R.drawable.placeholder_transparent),
-
+            error = painterResource(id = R.drawable.placeholder_transparent)
             )
     }
 
@@ -560,10 +562,9 @@ class MainViewModel(private val socketRepository: SocketRepository,private val p
             contentDescription = null,
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
-                .size(50.dp)
-            ,
-            placeholder = painterResource(id = R.drawable.placeholder_transparent)
-
+                .size(50.dp),
+            placeholder = painterResource(id = R.drawable.placeholder_transparent),
+            error = painterResource(id = R.drawable.placeholder_transparent)
         )
     }
 

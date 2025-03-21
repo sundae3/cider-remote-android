@@ -233,7 +233,7 @@ fun BottomNavigationBar(navController: NavHostController,bottomNavHeight: Dp) {
         NavigationBarItem(
             selected = currentRoute == "screen1", // Check if screen1 is selected,
             onClick = { navController.navigate("screen1") },
-            label = { Text("Setup", color = Color.White) },
+            label = { Text("Setup", color = Color.White, style = MaterialTheme.typography.titleLarge) },
             icon = {
                 Icon(
 
@@ -254,7 +254,7 @@ fun BottomNavigationBar(navController: NavHostController,bottomNavHeight: Dp) {
         NavigationBarItem(
             selected = currentRoute == "screen2", // Check if screen2 is selected
             onClick = { navController.navigate("screen2") },
-            label = { Text("Controls", color = Color.White) },
+            label = { Text("Controls", color = Color.White, style = MaterialTheme.typography.titleLarge) },
             icon = {
                 Icon(
                     painter = if (currentRoute == "screen2") painterResource(id = play_filled) else painterResource(id = play_icon),
@@ -274,7 +274,7 @@ fun BottomNavigationBar(navController: NavHostController,bottomNavHeight: Dp) {
         NavigationBarItem(
             selected = currentRoute == "screen3", // Check if screen3 is selected
             onClick = { navController.navigate("screen3") },
-            label = { Text("Queue", color = Color.White) },
+            label = { Text("Queue", color = Color.White, style = MaterialTheme.typography.titleLarge) },
             icon = {
                 Icon(
                     painter = if (currentRoute == "screen3") painterResource(id = list_fill) else painterResource(id = list_icon),

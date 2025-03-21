@@ -9,6 +9,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.graphics.Color
+import com.example.ciderremotetest1.ui.theme.CustomTypography
 
 
 @Composable
@@ -43,7 +44,7 @@ fun CiderRemoteTest1Theme(content: @Composable () -> Unit) {
     // Apply the theme
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography(),
+        typography = CustomTypography,
         shapes = Shapes(),
         content = content // Apply theme to content
     )

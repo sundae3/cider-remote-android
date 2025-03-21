@@ -186,7 +186,7 @@ fun FormOverlay(
                         },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Cancel", color= Color.White)
+                        Text("Cancel", color= Color.White, style = MaterialTheme.typography.bodyLarge)
                     }
 
                     Button(
@@ -203,7 +203,7 @@ fun FormOverlay(
                         },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Submit")
+                        Text("Submit", style = MaterialTheme.typography.bodyLarge)
                     }
                 }
 
