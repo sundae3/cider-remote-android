@@ -51,14 +51,15 @@ data class NowPlayingJsonMaker(
 @Serializable
 data class Trackinfo(
     @EncodeDefault
-    val name: String,
-    val artistName: String,
-    val albumName: String,
-    val artwork: Albumart,
+    val name: String = "No name",
+    val artistName: String = "Unknown",
+    val albumName: String = "Not Found",
+    @EncodeDefault
+    val artwork: Albumart = Albumart(), // Provide default instance
     var inLibrary: Boolean,
-    val inFavorites: Boolean,
-    var shuffleMode: Int,
-    var repeatMode: Int,
+    val inFavorites: Boolean = false,
+    var shuffleMode: Int = 0,
+    var repeatMode: Int = 0,
     val playParams: PlayParams,
     @EncodeDefault
     val currentPlaybackTime: Float = 0f,
@@ -77,7 +78,8 @@ data class PlayParams(
 @JsonIgnoreUnknownKeys
 @Serializable
 data class Albumart(
-    val url: String
+    @EncodeDefault
+    val url: String = ""
 )
 
 
@@ -142,10 +144,12 @@ data class QueueJsonMaker(
 @Serializable
 @Immutable //its for scroll smooth testing
 data class trackdata(
-    val albumName: String,
-    val artwork: Albumart,
-    val name: String,
-    val artistName: String,
+    @EncodeDefault
+    val albumName: String = "Unknown",
+    @EncodeDefault
+    val artwork: Albumart = Albumart(), // Provide default instance
+    val name: String = "No name",
+    val artistName: String = "Not Found",
 )
 
 @OptIn(ExperimentalSerializationApi::class)

@@ -2,9 +2,11 @@ package com.example.ciderremotetest1.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.ciderremotetest1.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -31,4 +33,23 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
+)
+
+val CustomFontFamily = FontFamily(
+    Font(R.font.manrope_regular, FontWeight.Normal),
+    Font(R.font.manrope_semibold, FontWeight.Bold)
+)
+
+val CustomTypography = Typography(
+    bodyLarge = TextStyle(
+        fontFamily = CustomFontFamily,
+        fontWeight = FontWeight.Normal
+    ),
+    titleLarge = TextStyle(
+        fontFamily = CustomFontFamily,
+        fontWeight = FontWeight.Bold
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = CustomFontFamily, fontWeight = FontWeight.Normal/*...*/, fontSize = 30.sp
+    )
 )
