@@ -36,8 +36,8 @@ val Typography = Typography(
 )
 
 val CustomFontFamily = FontFamily(
-    Font(R.font.manrope_regular, FontWeight.Normal),
-    Font(R.font.manrope_semibold, FontWeight.Bold)
+    Font(R.font.figtree_regular, FontWeight.Normal),
+    Font(R.font.figtree_bold, FontWeight.Bold)
 )
 
 val CustomTypography = Typography(
